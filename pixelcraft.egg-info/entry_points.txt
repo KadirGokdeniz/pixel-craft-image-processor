@@ -1,0 +1,6 @@
+[console_scripts]
+pixelcraft = src.main:main
+
+[gui_scripts]
+pixelcraft-gui = src.main:main
+
