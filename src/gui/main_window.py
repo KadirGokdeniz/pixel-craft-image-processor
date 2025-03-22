@@ -61,13 +61,15 @@ class MainWindow(QMainWindow):
     
     def __init__(self):
         super().__init__()
-        self.initUI()
         
         # Initialize variables
         self.current_image_path = None
         self.original_image = None
         self.processed_image = None
         self.filters = ImageFilters()
+        
+        # Set up the user interface
+        self.initUI()
         
     def initUI(self):
         """Set up the user interface."""
@@ -85,6 +87,10 @@ class MainWindow(QMainWindow):
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
         self.statusBar.showMessage("Ready")
+        
+        # Status bar için benzerlik etiketi
+        self.status_similarity_label = QLabel("Similarity: N/A")
+        self.statusBar.addPermanentWidget(self.status_similarity_label)
         
         # Create central widget
         central_widget = QWidget()
@@ -133,12 +139,14 @@ class MainWindow(QMainWindow):
         self.filter_panel = FilterPanel()
         self.filter_panel.filterApplied.connect(self.applyFilter)
         
-        filter_dock.setWidget(self.filter_panel)
-        self.addDockWidget(Qt.RightDockWidget, filter_dock)
+        # Benzerlik göstergesini ekleyin
+        self.filter_panel.addSimilarityDisplay()
         
-        # Add similarity display to status bar
-        self.similarity_label = QLabel("Similarity: N/A")
-        self.statusBar.addPermanentWidget(self.similarity_label)
+        # Benzerlik etiketine referans oluşturun
+        self.similarity_label = self.filter_panel.similarity_label
+        
+        filter_dock.setWidget(self.filter_panel)
+        self.addDockWidget(Qt.RightDockWidgetArea, filter_dock)
         
     def createMenuBar(self):
         """Create the application menu bar."""
@@ -244,7 +252,8 @@ class MainWindow(QMainWindow):
                 # Update status
                 file_name = os.path.basename(file_path)
                 self.statusBar.showMessage(f"Opened {file_name}")
-                self.similarity_label.setText("Similarity: N/A")
+                self.similarity_label.setText("N/A %")
+                self.status_similarity_label.setText("Similarity: N/A")
                 
                 # Update window title
                 self.setWindowTitle(f"PixelCraft - {file_name}")
@@ -284,7 +293,8 @@ class MainWindow(QMainWindow):
         if self.original_image is not None:
             self.processed_view.clear()
             self.processed_image = None
-            self.similarity_label.setText("Similarity: N/A")
+            self.similarity_label.setText("N/A %")
+            self.status_similarity_label.setText("Similarity: N/A")
             self.statusBar.showMessage("Image reset")
             
     def applyFilter(self, filter_name, sensitivity):
@@ -322,7 +332,28 @@ class MainWindow(QMainWindow):
             
             # Calculate similarity
             similarity = calculate_similarity(processed, self.original_image, sensitivity)
-            self.similarity_label.setText(f"Similarity: {similarity}%")
+            
+            # Değere göre renkli geri bildirim
+            color = "#4CAF50"  # Green for high similarity
+            if similarity < 50:
+                color = "#F44336"  # Red for low similarity
+            elif similarity < 80:
+                color = "#FF9800"  # Orange for medium similarity
+                
+            self.similarity_label.setText(f"{similarity}%")
+            self.similarity_label.setStyleSheet(f"""
+                font-size: 32px;
+                font-weight: bold;
+                color: {color};
+                padding: 15px;
+                margin: 10px;
+                border: 2px solid #CCCCCC;
+                border-radius: 10px;
+                background-color: #F8F9FA;
+            """)
+            
+            # Durum çubuğundaki etiketi de güncelleyin
+            self.status_similarity_label.setText(f"Similarity: {similarity}%")
             
             # Update status
             self.statusBar.showMessage(f"Applied {filter_name} filter with sensitivity {sensitivity}")
@@ -353,3 +384,39 @@ class MainWindow(QMainWindow):
             "A professional image processing application with customizable filters, "
             "similarity analysis, and batch processing capabilities."
         )
+    
+    def openImageFromPath(self, image_path):
+        """
+        Open an image from a file path.
+        
+        Args:
+            image_path (str): Path to the image file
+        """
+        if os.path.exists(image_path):
+            try:
+                # Load the image
+                self.current_image_path = image_path
+                self.original_image = ImageIO.read_image(image_path)
+                
+                # Update the views
+                self.original_view.setImage(self.original_image)
+                self.processed_view.clear()
+                self.processed_image = None
+                
+                # Update status
+                file_name = os.path.basename(image_path)
+                self.statusBar.showMessage(f"Opened {file_name}")
+                self.similarity_label.setText("N/A %")
+                self.status_similarity_label.setText("Similarity: N/A")
+                
+                # Update window title
+                self.setWindowTitle(f"PixelCraft - {file_name}")
+                
+                return True
+                
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Could not open image: {str(e)}")
+                return False
+        else:
+            QMessageBox.warning(self, "Warning", f"Image file not found: {image_path}")
+            return False

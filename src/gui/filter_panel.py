@@ -99,6 +99,7 @@ class FilterPanel(QWidget):
         # Add some space
         main_layout.addStretch()
         
+        
     def onFilterChanged(self, filter_name):
         """
         Handle filter selection change.
@@ -172,3 +173,43 @@ class FilterPanel(QWidget):
             int: Selected sensitivity value
         """
         return self.sensitivity_group.checkedId()
+    
+    def addSimilarityDisplay(self):
+        """Add a prominent similarity display to the filter panel."""
+        # Create similarity display section
+        similarity_group = QGroupBox("Image Similarity")
+        similarity_layout = QVBoxLayout()
+        similarity_group.setLayout(similarity_layout)
+        
+        # Create explanation label
+        explanation = QLabel("Similarity between original and processed images:")
+        explanation.setWordWrap(True)
+        similarity_layout.addWidget(explanation)
+        
+        # Create prominent similarity display
+        self.similarity_label = QLabel("N/A %")
+        self.similarity_label.setAlignment(Qt.AlignCenter)
+        self.similarity_label.setStyleSheet("""
+            font-size: 32px;
+            font-weight: bold;
+            color: #007BFF;
+            padding: 15px;
+            margin: 10px;
+            border: 2px solid #CCCCCC;
+            border-radius: 10px;
+            background-color: #F8F9FA;
+        """)
+        self.similarity_label.setMinimumHeight(70)
+        similarity_layout.addWidget(self.similarity_label)
+        
+        # Add a description of what this means
+        explanation2 = QLabel(
+            "Higher values indicate greater similarity to the original image. "
+            "Lower values indicate more significant changes."
+        )
+        explanation2.setWordWrap(True)
+        explanation2.setStyleSheet("font-style: italic; color: #666666;")
+        similarity_layout.addWidget(explanation2)
+        
+        # Add the similarity group to the main layout
+        self.layout().addWidget(similarity_group)

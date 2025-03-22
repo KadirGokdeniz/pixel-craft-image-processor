@@ -12,6 +12,8 @@ src/core/__init__.py
 src/core/filters.py
 src/core/similarity.py
 src/gui/__init__.py
+src/gui/batch_processor.py
+src/gui/comparison_view.py
 src/gui/filter_panel.py
 src/gui/main_window.py
 src/utils/__init__.py
