@@ -6,7 +6,20 @@
 
 PixelCraft is a professional image processing application that enables users to apply various filters to digital images and analyze pixel-level similarities. Originally developed as an academic project, it has been refactored for professional use with a modern user interface and extended functionality.
 
-![PixelCraft Screenshot](resources/images/screenshot_placeholder.png)
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="images/1.png" alt="PixelCraft Screenshot 1" width="400"/></td>
+      <td><img src="images/2.png" alt="PixelCraft Screenshot 2" width="400"/></td>
+      <td><img src="images/3.png" alt="PixelCraft Screenshot 3" width="400"/></td>
+    </tr>
+    <tr>
+      <td><img src="images/4.png" alt="PixelCraft Screenshot 4" width="400"/></td>
+      <td><img src="images/5.png" alt="PixelCraft Screenshot 5" width="400"/></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
 
 ## Features
 
