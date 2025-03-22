@@ -1,0 +1,21 @@
+# Core dependencies
+numpy>=1.19.0
+opencv-python>=4.5.0
+PyQt5>=5.15.0
+Pillow>=8.0.0
+
+# Image processing
+scikit-image>=0.18.0
+
+# Data handling
+pandas>=1.1.0
+
+# File operations
+pathlib>=1.0.1
+
+# Utilities
+tqdm>=4.50.0
+matplotlib>=3.3.0
+
+# Logging
+colorlog>=4.7.0
